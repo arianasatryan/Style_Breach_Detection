@@ -1,0 +1,16 @@
+measure{
+  key: "windowDiff"
+  value: "0.3705204511971338"
+}
+measure{
+  key: "winP"
+  value: "0.6929925938453442"
+}
+measure{
+  key: "winR"
+  value: "0.4085687720896899"
+}
+measure{
+  key: "winF"
+  value: "0.3059908734900816"
+}
