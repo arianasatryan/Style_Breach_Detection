@@ -1,20 +1,10 @@
 import os
 import re
 
-train_path = '/Users/hekpo/PycharmProjects/Style_Breach_Detection/for_arm/data/train_dataset/'
-test_path = '/Users/hekpo/PycharmProjects/Style_Breach_Detection/for_arm/data/test_dataset/'
-train_files = os.listdir(train_path)
-test_files = os.listdir(test_path)
-train_results_path = '/Users/hekpo/PycharmProjects/Style_Breach_Detection/for_arm/results/train_results/'
-test_results_path = '/Users/hekpo/PycharmProjects/Style_Breach_Detection/for_arm/results/test_results/'
-
-def simbol_correction_in(files):
-    if files == train_files:
-        path = train_path
-    else:
-        path = test_path
+def simbol_correction_in(files_path):
+    files = os.listdir(files_path + '/')
     for file in files:
-            with  open(path + file, 'r', encoding = 'utf-8') as fin:
+            with  open(files_path + '/' + file, 'r', encoding = 'utf-8') as fin:
                 lines = fin.readlines()
                 lines = [x.strip() for x in lines]
                 new_lines=[]
@@ -82,7 +72,7 @@ def simbol_correction_in(files):
                             words[i] = re.sub('\d+', '', words[i])
                     new_line =' '.join(words)
                     new_lines.append(new_line)
-            with  open(path+file, 'w', encoding = 'utf-8') as fout:
+            with  open(files_path + '/' + file, 'w', encoding = 'utf-8') as fout:
                 fout.write('\n'.join(new_lines))
 
 """
@@ -94,11 +84,8 @@ def write_corr_sized_docs(file_path, file, list, i):
         with open(file_path + filename + '_' + str(i) + file_format, 'w', encoding = 'utf-8')as fout:
             fout.write(text)
 
-def paragraph_correction_in(files):
-    if files == train_files:
-        path = train_path
-    else:
-        path = test_path
+def paragraph_correction_in(files_path):
+    files=os.listdir(files_path+'/')    
     for file in files:
         with open(path + file, encoding = 'utf-8') as infile:
             lines = infile.readlines()
@@ -126,19 +113,16 @@ def paragraph_correction_in(files):
         new_lines.append(lines[l - 2])
         new_lines.append(lines[l - 1])
         text = ''.join(new_lines)
-        with open(path + file, 'w', encoding = 'utf-8') as outfile:
+        with open(files_path + '/' + file, 'w', encoding = 'utf-8') as outfile:
             outfile.write(text)
 
 
-def file_size_correction_in(files):
-    if files == train_files:
-        path = train_path
-    else:
-        path = test_path
+def file_size_correction_in(files_path):
+    files=os.listdir(files_path+'/')    
     for file in files:
-        with open(path + file, encoding = 'utf-8')as fin:
-            filename, file_format = os.path.splitext(os.path.basename(path + file))
-            kb_size = int(os.stat(path + file).st_size/1024)
+        with open(files_path + '/' + file, encoding = 'utf-8')as fin:
+            filename, file_format = os.path.splitext(os.path.basename(files_path + '/' + file))
+            kb_size = int(os.stat(files_path + '/' + file).st_size/1024)
             if kb_size > 500:
                 text = fin.read()
                 parag = get_paragraphs_of(path + file)
@@ -171,19 +155,16 @@ def file_size_correction_in(files):
                             list3.append('\n\n')
                             i += 1
         if kb_size > 500:
-            os.remove(path + file)
+            os.remove(files_path + '/' + file)
             write_corr_sized_docs(path, file, list1, 1)
             write_corr_sized_docs(path, file, list2, 2)
             write_corr_sized_docs(path, file, list3, 3)
 """
 
-def delete_whitelines_in(files):
-    if files == train_files:
-        path = train_path
-    else:
-        path = test_path
+def delete_whitelines_in(files_path):
+    files=os.listdir(files_path+'/')
     for file in files:
-        with open(path + file, encoding = 'utf-8') as infile:
+        with open(files_path + '/' + file, encoding = 'utf-8') as infile:
             filename, file_format = os.path.splitext(file)
             lines = infile.readlines()
             new_lines = []
@@ -193,7 +174,7 @@ def delete_whitelines_in(files):
                 if lines[i].strip():
                     new_lines.append(lines[i])
             text = ''.join(new_lines)
-        with open(path + file, 'w', encoding='utf-8') as outfile:
+        with open(files_path + '/' + file, 'w', encoding='utf-8') as outfile:
             outfile.write(text)
 
 

@@ -14,14 +14,7 @@ from scipy.stats import wilcoxon
 from sklearn.cluster import AgglomerativeClustering
 avgwordlength = 5
 
-train_path = '/Users/hekpo/PycharmProjects/Style_Breach_Detection/for_eng/data/pan17-style-breach-detection-training-dataset-2017-02-15'
-test_path = '/Users/hekpo/PycharmProjects/Style_Breach_Detection/for_eng/data/pan17-style-breach-detection-test-dataset-2017-02-15'
-train_files = os.listdir(train_path + '/')
-test_files = os.listdir(test_path + '/')
-train_results_path = '/Users/hekpo/PycharmProjects/Style_Breach_Detection/for_eng/results/train_results'
-test_results_path = '/Users/hekpo/PycharmProjects/Style_Breach_Detection/for_eng/results/test_results'
-
-def by_method(method_name, segments, dataframe,
+def changes_by_method(method_name, segments, dataframe,
               allowed_portion = 1, alpha_value = 1,
               n_clusters = 2, linkage = 'ward', affinity = 'euclidean'):
 
@@ -169,23 +162,16 @@ def space_procent(text):
 
 # train_or_test is a string just to separate results_directories('train'or 'test')
 #how_to_split is a string that specify method of splitting('par' or 'sent')
-def method_for_files(files, how_to_split, method_name, allowed_portion = 1, alpha_value = 1, n_clusters = 2, linkage = 'ward', affinity = 'euclidean'):
-    if files == train_files:
-        path = train_path
-        train_or_test = 'train'
-        output_path = train_results_path
-    else:
-        path = test_path
-        train_or_test = 'test'
-        output_path = test_results_path
+def method_for_files(files_path, results_path, how_to_split, method_name, allowed_portion = 1, alpha_value = 1, n_clusters = 2, linkage = 'ward', affinity = 'euclidean'):
+    files = os.listdir(files_path + '/')
     for file in files:
         if file.endswith(".txt"):
-            filename, file_format = os.path.splitext(os.path.basename(path + '/' + file))
+            filename, file_format = os.path.splitext(os.path.basename(files_path + '/' + file))
             if (how_to_split == 'par'):
-                segments = get_paragraphs_of(path + '/' + file)
+                segments = get_paragraphs_of(files_path + '/' + file)
                 starts_of_segments = get_starts_of_paragraphs(segments)
             elif (how_to_split == 'sent'):
-                segments = get_sentsegs_of(path + '/' + file, m = 10)
+                segments = get_sentsegs_of(files_path + '/' + file, m = 10)
 
             # 1.word tfidf
             word_vectorizer = TfidfVectorizer(tokenizer = word_tokenize)
@@ -230,15 +216,14 @@ def method_for_files(files, how_to_split, method_name, allowed_portion = 1, alph
             df = pd.DataFrame(denselist)
             #df = pd.concat([df, add_df], axis = 1, ignore_index = True)
 
-            style_change_borders = by_method(method_name = method_name, segments = segments, dataframe = df,
+            style_change_borders = changes_by_method(method_name = method_name, segments = segments, dataframe = df,
                                              allowed_portion = allowed_portion, alpha_value = alpha_value,
                                              n_clusters = n_clusters, linkage = linkage, affinity = affinity)
 
             # writing results
-            with open(output_path + '/' + ('%s.truth' % filename), 'w') as o_f:
+            with open(results_path + '/' + ('%s.truth' % filename), 'w') as o_f:
                 json.dump({"borders": style_change_borders}, o_f, indent = 4)
 
 
-method_for_files(train_files, 'par', method_name = 'Wilcoxon', allowed_portion = 1, alpha_value = 0.05)
 
 

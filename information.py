@@ -2,26 +2,6 @@ import os
 import re
 import json
 
-language = 'eng'
-train_path = '/Users/hekpo/PycharmProjects/Style_Breach_Detection/for_eng/data/pan17-style-breach-detection-training-dataset-2017-02-15'
-test_path = '/Users/hekpo/PycharmProjects/Style_Breach_Detection/for_eng/data/pan17-style-breach-detection-test-dataset-2017-02-15'
-train_files = os.listdir(train_path + '/')
-test_files = os.listdir(test_path + '/')
-train_results_path = '/Users/hekpo/PycharmProjects/Style_Breach_Detection/for_eng/results/train_results'
-test_results_path = '/Users/hekpo/PycharmProjects/Style_Breach_Detection/for_eng/results/test_results'
-saved_results_path = train_results_path
-
-"""
-language = 'arm'
-train_path = '/Users/hekpo/PycharmProjects/Style_Change_Detection/for_arm/data/train_dataset'
-test_path = '/Users/hekpo/PycharmProjects/Style_Change_Detection/for_arm/data/test_dataset'
-train_files = os.listdir(train_path + '/')
-test_files = os.listdir(test_path + '/')
-train_results_path = '/Users/hekpo/PycharmProjects/Style_Change_Detectionfor_arm/results/train_results'
-test_results_path = '/Users/hekpo/PycharmProjects/Karas/for_arm/results/test_results'
-saved_results_path = train_results_path
-"""
-
 def get_starts_of_paragraphs(paragraphs):
     start_of_paragraph = {}
     i = 1
@@ -52,41 +32,18 @@ def avg_paragraph_len_in(file_dir):
     num_par = num_paragraphs_in(file_dir)
     return len(tokens)/num_par
 
-def num_borders_in(file_dir, result_path):
+def num_borders_in(language, file_dir, result_path):
     filename, file_format = os.path.splitext(os.path.basename(file_dir))
     with open(result_path + '/' + filename + '.truth', encoding = 'utf-8') as jsonfile:
         json_results = json.load(jsonfile)
-        if language == 'eng':
+        if language ==  'eng':
             borders = json_results['borders']
-        elif language == 'arm':
+        elif language ==  'arm':
             borders = json_results['positions']
     return len(borders)
 
-def get_all_inform(files):
-    if files == train_files:
-        path = train_path
-        train_or_test = 'train'
-        result_path = train_results_path
-    else:
-        path = test_path
-        train_or_test = 'test'
-        result_path = test_results_path
-    for file in files:
-        filename, file_format = os.path.splitext(file)
-        print('Filename:', filename)
-        parag = get_paragraphs_of(path + '/' + file)
-        num_par = num_paragraphs_in(path + '/' + file)
-        #max_num_bord = int(0.3 * num_par) + 1
-        res_num_bord = num_borders_in(path + '/' + file, result_path+ '/' )
-        print('Number of paragraphs in this file:', num_par)
-        print('Starts of the paragraphs:', get_starts_of_paragraphs(parag))
-        print('Average paragraph length(by tokens):', avg_paragraph_len_in(path + '/' + file))
-        #print('Maximum allowable number of borders :', max_num_bord)
-        print('Number of resulted borders:', res_num_bord)
-        #print('Procent of resulted borders from all:', res_num_bord*100/num_par)
-        print('\n\n')
-
-def compare_results(file_dir1, file_dir2, result_file_dir1, result_file_dir2):
+"""
+def compare_results(language, file_dir1, file_dir2, result_file_dir1, result_file_dir2):
     parags1 = get_paragraphs_of(file_dir1)
     parags2 = get_paragraphs_of(file_dir2)
     starts1 = get_starts_of_paragraphs(parags1)
@@ -94,7 +51,7 @@ def compare_results(file_dir1, file_dir2, result_file_dir1, result_file_dir2):
 
     with open(result_file_dir1, encoding = 'utf-8')as json1f:
         json_results1 = json.load(json1f)
-        if language == 'eng':
+        if language ==  'eng':
             borders1 = json_results1['borders']
         elif language == 'arm':
             borders1 = json_results1['positions']
@@ -118,17 +75,27 @@ def compare_results(file_dir1, file_dir2, result_file_dir1, result_file_dir2):
     print()
     return comp_res
 
-def compare_feature_results_for(files):
-    if files == train_files:
-        path = train_path
-        result_path = train_results_path
-    else:
-        path = test_path
-        result_path = test_results_path
+def compare_feature_results_for(files_path, results1_path,results2_path):
+    files = os.listdir(files_path + '/')
     for file in files:
         filename, file_format = os.path.splitext(file)
-        file_dir1 = path + filename + '.txt'
-        result_file_dir1 = result_path + '/' + filename + '.truth'
-        result_file_dir2 = saved_results_path + '/' + filename + '.truth'
+        file_dir1 = files_path + filename + '.txt'
+        result_file_dir1 = results1_path + '/' + filename + '.truth'
+        result_file_dir2 = results2_path + '/' + filename + '.truth'
         print(filename, '\n', compare_results(file_dir1, file_dir1, result_file_dir1, result_file_dir2), '\n')
+"""
+
+def get_all_inform(language, files_path, results_path):
+    files=os.listdir(files_path + '/')
+    for file in files:
+        filename, file_format = os.path.splitext(file)
+        print('Filename:', filename)
+        parag = get_paragraphs_of(files_path + '/' + file)
+        num_par = num_paragraphs_in(files_path + '/' + file)
+        res_num_bord = num_borders_in(language, files_path + '/' + file, results_path+ '/' )
+        print('Number of paragraphs in this file:', num_par)
+        print('Starts of the paragraphs:', get_starts_of_paragraphs(parag))
+        print('Average paragraph length(by tokens):', avg_paragraph_len_in(files_path + '/' + file))
+        print('Number of resulted borders:', res_num_bord)
+        print('\n\n')
 
