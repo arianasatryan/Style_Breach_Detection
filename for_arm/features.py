@@ -2,13 +2,14 @@ from for_arm.arm_tokenizer import tokenize
 from nltk.tag.perceptron import PerceptronTagger
 from nltk.tokenize import sent_tokenize
 PICKLE = "averaged_perceptron_tagger.pickle"
+useful_path='/Users/hekpo/PycharmProjects/Style_Breach_Detection/for_arm'
 
 def get_punct_list():
     return ['«', '»', '(', ')', '/', '\\', ',', '.', '․', ':', '։', '՝', '՟', '՚', '՜', '՛', '՞', '—']
 def get_prefixes_list():
-    return open('prefixes_hy.txt', encoding='utf-8').read().splitlines()
+    return open(useful_path + '/' + 'prefixes_hy.txt', encoding='utf-8').read().splitlines()
 def get_suffixes_list():
-    return open('suffixes_hy.txt', encoding='utf-8').read().splitlines()
+    return open(useful_path + '/' + 'suffixes_hy.txt', encoding='utf-8').read().splitlines()
 def get_tokenized(text):
     return tokenize(text)
 
@@ -118,7 +119,7 @@ def short_sent_portion(text):
     return short_sent_count/len(sents)
 
 def stopword_tokenizer(text):
-    stopwords_list = open('stopwords_hy.txt', encoding='utf-8').read().splitlines()
+    stopwords_list = open(useful_path + '/' + 'stopwords_hy.txt', encoding='utf-8').read().splitlines()
     word_tokens = tokenize(text)
     stopword_tokens = []
     for item in word_tokens:

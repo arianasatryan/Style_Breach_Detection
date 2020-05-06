@@ -88,7 +88,3 @@ def method_for_files(files_path, results_path , how_to_split, method_name, allow
                 json.dump({"positions": style_change_borders}, o_f, indent = 4)
 
 
-
-
-
-
